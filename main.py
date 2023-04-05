@@ -90,6 +90,8 @@ def handleMessage(message):
                 bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
         except KeyError:
             pass
+        bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
+
     userList[index].addToHistory(role="assistant", message=answer)
     
 
