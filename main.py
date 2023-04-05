@@ -1,6 +1,6 @@
 import openai
 import os
-from os.path import join, dirname 
+from os.path import join, dirname
 import dotenv
 import telebot
 from time import time
@@ -30,9 +30,10 @@ class ChatGptClient(object):
     model = ""
     def __init__(self, model) -> None:
         self.model = model
-    def sendPrompt(self, message, history): 
+    def sendPrompt(self, message, history):
         if history == None:
             history = [{"role":"user", "content": message}]
+        # print(context)
         completion = openai.ChatCompletion.create(
             model=self.model,
             messages=history,
@@ -42,7 +43,7 @@ class ChatGptClient(object):
 
 userList = []
 
-bot = telebot.TeleBot(token=os.getenv("TELEGRAM_KEY"), parse_mode="MARKDOWN")
+bot = telebot.TeleBot(token=os.getenv("TELEGRAM_KEY"))
 
 chatGpt = ChatGptClient(model="gpt-3.5-turbo")
 
@@ -90,10 +91,9 @@ def handleMessage(message):
                 bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
         except KeyError:
             pass
-        bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
-
+    bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
     userList[index].addToHistory(role="assistant", message=answer)
-    
+
 
 
 bot.infinity_polling()
