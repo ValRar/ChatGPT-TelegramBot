@@ -37,9 +37,8 @@ class ChatGptClient(object):
         completion = openai.ChatCompletion.create(
             model=self.model,
             messages=history,
-            stream=True
         )
-        return completion
+        return completion.choices[0].message.content
 
 userList = []
 
@@ -82,16 +81,9 @@ def handleMessage(message):
     history = userList[index].getHistory()
     userList[index].addToHistory(role="user", message=message.text)
     waitMessage = bot.send_message(chat_id=message.chat.id, text="Генерация ответа...")
-    chunks = chatGpt.sendPrompt(message=message.text, history=history)
-    answer = ""
-    for chunk in chunks:
-        try:
-            answer += chunk['choices'][0]['delta']['content']
-            if (chunk['choices'][0]['delta']['content'].strip() != "" and int(time() * 10) % 5 == 0):
-                bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
-        except KeyError:
-            pass
-    bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
+    answer = chatGpt.sendPrompt(message=message.text, history=history)
+
+    bot.send_message(chat_id=waitMessage.chat.id, text=answer)
     userList[index].addToHistory(role="assistant", message=answer)
 
 
