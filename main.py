@@ -87,7 +87,7 @@ def handleMessage(message):
     for chunk in chunks:
         try:
             answer += chunk['choices'][0]['delta']['content']
-            if (chunk['choices'][0]['delta']['content'].strip() != "" and int(time() * 10) % 5 == 0):
+            if (chunk['choices'][0]['delta']['content'].strip() != "" and int(time()) % 2 == 0):
                 bot.edit_message_text(message_id=waitMessage.id, chat_id=message.chat.id, text=answer)
         except KeyError:
             pass
