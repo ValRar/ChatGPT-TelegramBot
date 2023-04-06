@@ -81,10 +81,12 @@ def handleMessage(message):
     history = userList[index].getHistory()
     userList[index].addToHistory(role="user", message=message.text)
     waitMessage = bot.send_message(chat_id=message.chat.id, text="Генерация ответа...")
-    answer = chatGpt.sendPrompt(message=message.text, history=history)
-
-    bot.send_message(chat_id=waitMessage.chat.id, text=answer)
-    userList[index].addToHistory(role="assistant", message=answer)
+    try:
+        answer = chatGpt.sendPrompt(message=message.text, history=history)
+        bot.send_message(chat_id=waitMessage.chat.id, text=answer)
+        userList[index].addToHistory(role="assistant", message=answer)
+    except:
+        bot.send_message(chat_id=waitMessage.chat.id, text="Произошла ошибка во время генерации ответа.😭😭😭")
 
 
 
