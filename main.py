@@ -37,7 +37,8 @@ class ChatGptClient(object):
     def sendPrompt(self, message, history, temperature):
         if history == None:
             history = [{"role":"user", "content": message}]
-        # print(context)
+        if len(str(history)) >= 4000:
+            history = [{"role":"user", "content": message}]
         completion = openai.ChatCompletion.create(
             model=self.model,
             messages=history,
@@ -101,7 +102,7 @@ def handleMessage(message):
     else:
         userList = [Client(chatId=message.chat.id)]
         index = 0
-    if userList[index].isSettingTemperature:
+    if userList[index].isSettingTemperature == True:
         try:
             temperature = float(message.text)
         except ValueError:
@@ -126,8 +127,8 @@ def handleMessage(message):
         bot.send_message(chat_id=waitMessage.chat.id, text="Произошла ошибка во время генерации ответа.😭😭😭")
         print("======================================================================")
         print_exc(err)
-
-
+    if str(userList[index].getHistory()) >= 4000:
+        userList[index].deleteHistory()
 
 bot.infinity_polling()
 # gpt-3.5-turbo
