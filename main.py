@@ -37,7 +37,7 @@ class ChatGptClient(object):
     def sendPrompt(self, message, history, temperature):
         if history == None:
             history = [{"role":"user", "content": message}]
-        if len(str(history)) >= 4000:
+        if len(str(history)) >= 3500:
             history = [{"role":"user", "content": message}]
         completion = openai.ChatCompletion.create(
             model=self.model,
@@ -127,7 +127,8 @@ def handleMessage(message):
         bot.send_message(chat_id=waitMessage.chat.id, text="Произошла ошибка во время генерации ответа.😭😭😭")
         print("======================================================================")
         print_exc(err)
-    if str(userList[index].getHistory()) >= 4000:
+    if len(str(userList[index].getHistory())) >= 3500:
+        bot.send_message(chat_id=message.chat.id, text="📃Контекст был удалён из-за слишком большого размера.")
         userList[index].deleteHistory()
 
 bot.infinity_polling()
