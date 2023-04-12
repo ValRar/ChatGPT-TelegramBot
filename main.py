@@ -69,8 +69,11 @@ def deleteContext(message):
     if userList:
         index = findClient(message.chat.id)
         if index != -1:
-            userList[index].deleteHistory()
-            bot.send_message(chat_id=message.chat.id, text="📃Контекст переписки успешно удалён.")
+            if userList[index].getHistory():
+                userList[index].deleteHistory()
+                bot.send_message(chat_id=message.chat.id, text="📃Контекст переписки успешно удалён.")
+            else:
+                bot.send_message(chat_id=message.chat.id, text="У вас нет истории запросов на данный момент.")
     else:
         bot.send_message(chat_id=message.chat.id, text="У вас нет истории запросов на данный момент.")
 
