@@ -8,6 +8,8 @@ from traceback import print_exc
 dotenv_path = join(dirname(__file__), '.env')
 dotenv.load_dotenv(dotenv_path)
 openai.api_key = os.getenv("OPENAI_KEY")
+HISTORY_LIMIT = 4000
+
 class Client(object):
     isSettingTemperature = False
     temperature = 1
@@ -37,7 +39,7 @@ class ChatGptClient(object):
     def sendPrompt(self, message, history, temperature):
         if history == None:
             history = [{"role":"user", "content": message}]
-        if len(str(history)) >= 3500:
+        if len(str(history)) >= HISTORY_LIMIT:
             history = [{"role":"user", "content": message}]
         completion = openai.ChatCompletion.create(
             model=self.model,
@@ -130,7 +132,7 @@ def handleMessage(message):
         bot.send_message(chat_id=waitMessage.chat.id, text="Произошла ошибка во время генерации ответа.😭😭😭")
         print("======================================================================")
         print_exc(err)
-    if len(str(userList[index].getHistory())) >= 3500:
+    if len(str(userList[index].getHistory())) >= HISTORY_LIMIT:
         bot.send_message(chat_id=message.chat.id, text="📃Контекст был удалён из-за слишком большого размера.")
         userList[index].deleteHistory()
 
